@@ -1,0 +1,10 @@
+# Blacklist
+deny 212.166.55.43;
+
+if ($request_method !~ ^(GET|OPTION|POST|PUT|PATCH|DELETE|HEAD)$ ) {
+  return 444;
+}
+
+if ($uri ~* "(\.action|\.php|\.asp|php-.*|php[0-9]|php\..*|cgi-bin.*)$" ) {
+  return 444;
+}

@@ -1,3 +1,29 @@
+app_name = node['applications'].keys.first
+
+Chef::Log.info("Chef running in environment: #{ node['environment']['framework_env'] }")
+Chef::Log.info("Chef runnning for application: #{ app_name }")
+
+Chef::Log.info("Chef installing bundler if needed")
+#
+gem_package "bundler" do
+  source "http://rubygems.org"
+  action :install
+  not_if "gem list | grep bundler"
+end
+
+# Add any required packages first
+
+# Set up environment variables, keys, and core variables next
+include_recipe "secrets"
+include_recipe "aws-keys"
+
+# Resque
+include_recipe "resque-yml"
+include_recipe "resque"
+
+# webserver
+include_recipe "nginx"
+
 #execute "testing" do
 #  command %Q{
 #    echo "i ran at #{Time.now}" >> /root/cheftime
@@ -136,10 +162,10 @@
   # postgresql9_pg_trgm "dbname"
   # postgresql9_pgcrypto "dbname"
   # postgresql9_pgrowlocks "dbname"
-  
+
   # PostGis 1.5 (use with versions 9.0, 9.1, 9.2)
   # postgresql9_postgis "dbname"
-  
+
   # PostGis 2.0 (use with versions >= 9.2)
   #postgresql9_postgis2 "dbname"
   # postgresql9_seg "dbname"
@@ -148,15 +174,15 @@
   # postgresql9_test_parser "dbname"
   # postgresql9_unaccent "dbname"
   # postgresql9_uuid_ossp "dbname"
-  
-  
+
+
   # 9.1 and 9.2 Extensions
   # postgresql9_file_fdw "dbname"
   # postgresql9_xml2 "dbname"
-  
+
   #9.2 Extensions
   # postgresql9_pg_stat_statements "dbname"
-  
+
   # Admin-Level Contribs
   # postgresql9_pg_buffercache "postgres"
   # postgresql9_pg_freespacemap "postgres"
